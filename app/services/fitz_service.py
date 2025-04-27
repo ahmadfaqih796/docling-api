@@ -46,7 +46,7 @@ def extract_images_from_pdf(file_path: str):
                 "page": page_index + 1,
                 "index": img_index,
                 "extension": ext,
-               #  "base64": f"data:image/{ext};base64,{base64_image}",
+                "base64": f"data:image/{ext};base64,{base64_image}",
                 "url": image_url
             })
 
