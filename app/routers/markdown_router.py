@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Body, Query
 from typing import Literal
 from pydantic import BaseModel
-from app.services import fitz_service, markdown_service
+from app.services import fitz_service, markdown_service, upload_service
 
 from app.services.docling_service import DoclingService
 
@@ -29,3 +29,8 @@ async def upload_pdf(
     if view_images == "true":
         images = fitz_service.extract_images_from_pdf(file_path)
     return {"filename": file.filename, "text": teks.replace("\n", " "), "images": images}
+
+@router.post("/convert-pdf-by-dockling-url")
+async def by_url_pdf(payload: URLRequest = Body(...)):
+    res = docling_service.convert_by_url(payload.url)
+    return res

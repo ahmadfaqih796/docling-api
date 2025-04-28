@@ -67,3 +67,30 @@ class DoclingService:
             "markdown": markdown,
             "images": images
         }
+        
+    def convert_by_url(self, url: str) -> dict:
+        converter = DocumentConverter(
+            format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=self.pipeline_options)}
+        )
+        conv_res = converter.convert(url)
+        if conv_res.errors:
+            raise Exception(f"Conversion failed: {conv_res.errors[0].error_message}")
+
+        markdown, images = self._extract_images_and_markdown(conv_res)
+        
+        markdown = markdown.replace("\\n", "\n")
+        markdown = re.sub(r'[ \t]+', ' ', markdown)
+        markdown = re.sub(r'\n{2,}', '\n\n', markdown)
+
+        markdown = markdown.strip()
+
+        return {
+            "filename": url.split("/")[-1],
+            "markdown": markdown,
+            "images": images
+        }
+        return {
+            "markdown": result.document.export_to_markdown()
+        } 
+        
+        
