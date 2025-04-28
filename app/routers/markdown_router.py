@@ -10,8 +10,14 @@ docling_service = DoclingService()
 
 class URLRequest(BaseModel):
     url: str
+    
+@router.post("/convert-pdf-by-dockling")
+async def convert_pdf(file: UploadFile = File(...)):
+    file_bytes = await file.read()
+    result = docling_service.convert(file.filename, file_bytes)
+    return result
 
-@router.post("/upload-pdf")
+@router.post("/convert-pdf-by-fitz")
 async def upload_pdf(
     file: UploadFile = File(...),
     view_images: Literal["true", "false"] = Query("false", description="Set 'true' untuk ambil gambar", )
@@ -23,9 +29,3 @@ async def upload_pdf(
     if view_images == "true":
         images = fitz_service.extract_images_from_pdf(file_path)
     return {"filename": file.filename, "text": teks.replace("\n", " "), "images": images}
-
-@router.post("/convert-pdf-by-dockling")
-async def convert_pdf(file: UploadFile = File(...)):
-    file_bytes = await file.read()
-    result = docling_service.convert(file.filename, file_bytes)
-    return result

@@ -19,7 +19,7 @@ class DoclingService:
         options = PdfPipelineOptions()
         options.generate_page_images = False
         options.generate_picture_images = True
-        options.ocr_options = EasyOcrOptions(lang=["en", "id"])  # Tambahin bahasa OCR
+        options.ocr_options = EasyOcrOptions(lang=["en", "id"])
         return options
 
     def _extract_images_and_markdown(self, conv_res) -> Tuple[str, List[str]]:
