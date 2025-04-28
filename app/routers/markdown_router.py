@@ -3,7 +3,10 @@ from typing import Literal
 from pydantic import BaseModel
 from app.services import fitz_service, markdown_service
 
+from app.services.docling_service import DoclingService
+
 router = APIRouter(prefix="/markdown", tags=["Markdown"])
+docling_service = DoclingService()
 
 class URLRequest(BaseModel):
     url: str
@@ -21,15 +24,8 @@ async def upload_pdf(
         images = fitz_service.extract_images_from_pdf(file_path)
     return {"filename": file.filename, "text": teks.replace("\n", " "), "images": images}
 
-# @router.post("/upload-file-by-url")
-# async def upload_file_by_url(payload: URLRequest):
-#     file_path, filename = markdown_service.download_file_from_url(payload.url)
-#     teks = markdown_service.extract_text_from_pdf(file_path)
-#     return {"filename": filename, "text": teks}
-
-# @router.post("/upload-pdf-docling")
-# async def upload_pdf_docling(file: UploadFile = File(...)):
-#     file_data = await file.read()
-#     file_path = markdown_service.save_upload_file(file_data, file.filename)
-#     images = docling_service.extract_images_with_docling(file_path)
-#     return {"filename": file.filename, "images": images}
+@router.post("/convert-pdf-by-dockling")
+async def convert_pdf(file: UploadFile = File(...)):
+    file_bytes = await file.read()
+    result = docling_service.convert(file.filename, file_bytes)
+    return result
