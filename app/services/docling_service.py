@@ -89,8 +89,5 @@ class DoclingService:
             "markdown": markdown,
             "images": images
         }
-        return {
-            "markdown": result.document.export_to_markdown()
-        } 
         
         
